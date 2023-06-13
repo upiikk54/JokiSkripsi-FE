@@ -86,7 +86,7 @@ function SatuanAdmin() {
                         <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Satuan</Typography>
                         <Button variant='contained' sx={{
                             width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
-                                bgcolor: "black"
+                                bgcolor: "#317276"
                             }
                         }}>Tambah Satuan</Button>
                     </Box>
