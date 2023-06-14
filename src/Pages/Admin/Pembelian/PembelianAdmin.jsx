@@ -2,7 +2,7 @@ import React from 'react'
 import Dashboard from '../Dashboard'
 import { DataGrid, gridPageCountSelector, gridPageSelector, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
 import { Box, Button, Pagination, PaginationItem, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -26,6 +26,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 // }
 
 function PembelianAdmin() {
+    const navigate = useNavigate();
     const columns = [
         { field: 'Expired', headerName: 'Kode Transaksi', width: 150 },
         { field: 'nama_produk', headerName: 'Pemasok', width: 150 },
@@ -38,7 +39,7 @@ function PembelianAdmin() {
             sortable: false,
             renderCell: (params) => (
                 <Box sx={{ display: 'flex', gap: '8px' }}>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Link to={`/admin/pembelian/${params.id}`}><Button sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "yellow", border: '1px solid yellow'
                         },
@@ -66,6 +67,9 @@ function PembelianAdmin() {
         //     },
         // },
     ];
+    const handleCreatePembelian = () => {
+        navigate('/admin/pembelian/create')
+    }
 
     const rows = [
         { id: 1, nama_produk: 'Snow', nama_kategori: 'Jon', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
@@ -94,7 +98,7 @@ function PembelianAdmin() {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', mt: '20px', width: '100%', maxWidth: '1440px' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Pembelian</Typography>
-                        <Button variant='contained' sx={{
+                        <Button onClick={handleCreatePembelian} variant='contained' sx={{
                             width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
                                 bgcolor: "#317276"
                             }

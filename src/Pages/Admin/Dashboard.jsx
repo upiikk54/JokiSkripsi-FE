@@ -113,15 +113,15 @@ function Dashboard(props) {
         },
         {
             name: 'Pemasok',
-            link: '/admin/Pemasok'
+            link: '/admin/pemasok'
         },
         {
             name: 'Pembelian',
-            link: '/admin/Pembelian'
+            link: '/admin/pembelian'
         },
         {
             name: 'Penjualan',
-            link: '/admin/Penjualan'
+            link: '/admin/penjualan'
         },
     ]
     const location = useLocation().pathname
@@ -170,7 +170,7 @@ function Dashboard(props) {
                     open={open}
                 >
                     <DrawerHeader sx={{ justifyContent: 'space-between', py: 1.85 }}>
-                        <Link to={'/'} style={{ textDecoration: "none", color: "black" }} >
+                        {/* <Link to={'/'} style={{ textDecoration: "none", color: "black" }} > */}
                             <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer' }}>
                                 <Box sx={{ display: 'flex' }}>
                                     {/* <Box sx={{ maxWidth: '41px', width: '100%', borderRadius: '50%' }} component={'img'} src={Logo} /> */}haloo
@@ -180,7 +180,7 @@ function Dashboard(props) {
                                     <Typography sx={{ color: 'white', fontSize: '18px', fontWeight: 600, lineHeight: '39px', fontFamily: 'Axiforma' }}>Gallery</Typography>
                                 </Box>
                             </Box>
-                        </Link>
+                        {/* </Link> */}
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>

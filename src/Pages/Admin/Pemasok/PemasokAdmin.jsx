@@ -2,7 +2,7 @@ import React from 'react'
 import Dashboard from '../Dashboard'
 import { DataGrid, gridPageCountSelector, gridPageSelector, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
 import { Box, Button, Pagination, PaginationItem, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
@@ -25,6 +25,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 // }
 
 function PemasokAdmin() {
+    const navigate = useNavigate();
     const columns = [
         { field: 'nama_produk', headerName: 'Nama Pemasok', width: 150 },
         { field: 'harga', headerName: 'Telepon', width: 150 },
@@ -37,7 +38,7 @@ function PemasokAdmin() {
             sortable: false,
             renderCell: (params) => (
                 <Box sx={{ display: 'flex', gap: '8px' }}>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Link to={`/admin/pemasok/update/${params.id}`}><Button sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "yellow", border: '1px solid yellow'
                         },
@@ -81,13 +82,18 @@ function PemasokAdmin() {
         { id: 17, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
         { id: 18, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
     ];
+
+    const handleCreatePemasok = () => {
+        navigate('/admin/pemasok/create')
+    }
+
     return (
         <>
             <Dashboard>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', mt: '20px', width: '100%', maxWidth: '1440px' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Pemasok</Typography>
-                        <Button variant='contained' sx={{
+                        <Button onClick={handleCreatePemasok} variant='contained' sx={{
                             width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
                                 bgcolor: "#317276"
                             }

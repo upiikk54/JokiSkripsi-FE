@@ -2,7 +2,7 @@ import React from 'react'
 import Dashboard from '../Dashboard'
 import { DataGrid, gridPageCountSelector, gridPageSelector, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
 import { Box, Button, Pagination, PaginationItem, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
@@ -25,6 +25,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 // }
 
 function KategoriAdmin() {
+    const navigate = useNavigate();
     const columns = [
         { field: 'nama_kategori', headerName: 'Nama Kategori', width: 400, },
         {
@@ -34,7 +35,7 @@ function KategoriAdmin() {
             sortable: false,
             renderCell: (params) => (
                 <Box sx={{ display: 'flex', gap: '8px' }}>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Link to={`/admin/kategori/update/${params.id}`}><Button sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "yellow", border: '1px solid yellow'
                         },
@@ -78,13 +79,16 @@ function KategoriAdmin() {
         { id: 17, lastName: 'Roxie', nama_kategori: 'Harvey' },
         { id: 18, lastName: 'Roxie', nama_kategori: 'Harvey' },
     ];
+    const handleCreateCategory = () => {
+        navigate('/admin/kategori/create')
+    }
     return (
         <>
             <Dashboard>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', mt: '20px', width: '100%', maxWidth: '1440px' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Kategori</Typography>
-                        <Button variant='contained' sx={{
+                        <Button onClick={handleCreateCategory} variant='contained' sx={{
                             width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
                                 bgcolor: "#317276"
                             }
