@@ -1,12 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-// import AdminReducer from "./slices/AdminReducer";
-// import AuthReducer from "./slices/AuthReducer";
-// import UserReducer from './slices/UserReducer';
+import AuthReducer from "./slices/AuthReducer";
+import ProductReducer from "./slices/ProductReducer";
+import PurchaseReducer from "./slices/PurchaseReducer";
+import SaleReducer from "./slices/SaleReducer";
+import SupplierReducer from "./slices/SupplierReducer";
 
 const rootReducer = {
-    // user: UserReducer,
-    // auth: AuthReducer,
-    // admin: AdminReducer,
+    auth: AuthReducer,
+    product: ProductReducer,
+    purchase: PurchaseReducer,
+    sale: SaleReducer,
+    supplier: SupplierReducer,
 }
 
 const store = configureStore({

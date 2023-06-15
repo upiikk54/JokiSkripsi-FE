@@ -5,11 +5,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Toolbar from '@mui/material/Toolbar';
 import MuiAppBar from '@mui/material/AppBar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Button, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { getUsers } from '../../Redux/slices/AuthReducer';
 
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -28,6 +29,7 @@ import ShopIcon from '@mui/icons-material/Shop';
 import ShopOutlinedIcon from '@mui/icons-material/ShopOutlined';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
+import { useSnackbar } from 'notistack';
 
 const drawerWidth = 240;
 
@@ -77,7 +79,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 function Dashboard(props) {
-    const dispatch = useDispatch()
+    const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const ref = React.useRef(null);
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
@@ -88,6 +92,17 @@ function Dashboard(props) {
 
     const handleDrawerClose = () => {
         setOpen(false);
+    };
+    const users = useSelector(state => state.auth.dataUsers)
+    React.useEffect(() => {
+        dispatch(getUsers())
+    }, [])
+
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate('/')
+        enqueueSnackbar(`Pengguna berhasil keluar`, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 3000 });
     };
 
     const menus = [
@@ -148,11 +163,11 @@ function Dashboard(props) {
                                     Dashboard Admin
                                 </Typography>
                                 <Typography noWrap sx={{ fontSize: '14px', color: '#697586', fontFamily: 'Axiforma' }}>
-                                    Selamat Datang, Admin!
+                                    Selamat Datang, {users.role}!
                                 </Typography>
                             </Box>
                         </Box>
-                        <Button variant='outlined' color='error' sx={{ textTransform: 'none' }}>Logout</Button>
+                        <Button onClick={handleLogout} variant='outlined' color='error' sx={{ textTransform: 'none' }}>Logout</Button>
                     </Toolbar>
                 </AppBar>
                 <Drawer

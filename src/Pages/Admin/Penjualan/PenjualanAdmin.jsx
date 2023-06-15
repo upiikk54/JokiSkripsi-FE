@@ -43,7 +43,7 @@ function PenjualanAdmin() {
                             color: "yellow", border: '1px solid yellow'
                         },
                     }}><InfoOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Detail</Button></Link>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Link to={`/admin/penjualan/nota/${params.id}`}><Button sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "green", border: '1px solid green'
                         },

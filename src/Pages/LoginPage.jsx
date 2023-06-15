@@ -3,14 +3,55 @@ import React from 'react'
 import imageLogin from '../Assets/LoginPage/Background.png'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useSnackbar } from 'notistack'
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function LoginPage() {
+    const navigate = useNavigate()
+    const { enqueueSnackbar } = useSnackbar();
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    const [loginValue, setLoginValue] = React.useState({
+        emailValueLogin: '',
+        passwordValueLogin: '',
+    });
+
+    const handleChangeLogin = (prop) => (event) => {
+        setLoginValue({ ...loginValue, [prop]: event.target.value });
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const adminToLoginPayload = {
+                email: loginValue.emailValueLogin,
+                password: loginValue.passwordValueLogin,
+            }
+
+            const loginRequest = await axios.post(
+                "http://localhost:8811/v1/auth/login",
+                adminToLoginPayload
+            )
+            const loginResponse = loginRequest.data;
+
+            if (loginResponse.status) {
+                localStorage.setItem("token", loginResponse.data.token);
+                enqueueSnackbar(`${loginResponse.message}`, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 3000 });
+                navigate('/admin/dashboard')
+            }
+        } catch (err) {
+            const response = err.response.data;
+            enqueueSnackbar(`${response.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 3000 });
+        }
+    };
+
     return (
         <>
             <Box sx={{
@@ -37,7 +78,7 @@ function LoginPage() {
                         backgroundColor: 'white',
                         position: 'absolute',
                         top: { xl: '256px', md: '204px', sm: '244px', xs: '251px', xxs: '191px' },
-                        left: { xl: '355px', md: '290px', sm: '165px', xs: '70px'},
+                        left: { xl: '355px', md: '290px', sm: '165px', xs: '70px' },
                         justifyContent: 'center'
                     }}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '31px', pt: '10px' }}>
@@ -47,18 +88,22 @@ function LoginPage() {
                             </Box>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'center' }}>
                                 <TextField
+                                    onChange={handleChangeLogin('emailValueLogin')}
                                     sx={{ width: { xs: '466px', xxs: '80vw' } }}
                                     id="outlined-password-input"
                                     label="Email"
                                     type="Email"
                                     autoComplete="current-password"
                                 />
-                                <FormControl sx={{ width: { xs: '466px', xxs: '80vw' } }} variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                                    <OutlinedInput
-                                        id="outlined-adornment-password"
-                                        type={showPassword ? 'text' : 'password'}
-                                        endAdornment={
+                                <TextField
+                                    onChange={handleChangeLogin('passwordValueLogin')}
+                                    fullWidth
+                                    required
+                                    id="standard-adornment-password"
+                                    placeholder='password'
+                                    type={showPassword ? 'text' : 'password'}
+                                    InputProps={{
+                                        endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
                                                     aria-label="toggle password visibility"
@@ -69,11 +114,14 @@ function LoginPage() {
                                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
-                                        }
-                                        label="Password"
-                                    />
-                                </FormControl>
-                                <Button variant="contained" sx={{ color: 'white', backgroundColor: '#669197', width: '224px', height: '40px', mb: '40px' }}>LOGIN</Button>
+                                        ),
+                                    }}
+                                />
+                                <Button onClick={handleLogin} variant="contained" sx={{
+                                    color: 'white', backgroundColor: '#669197', width: '224px', height: '40px', mb: '40px', ":hover": {
+                                        bgcolor: "#317276"
+                                    }
+                                }}>LOGIN</Button>
                             </Box>
                         </Box>
                     </Box>
