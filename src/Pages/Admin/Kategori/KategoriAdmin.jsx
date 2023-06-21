@@ -5,29 +5,53 @@ import { Box, Button, Pagination, PaginationItem, Stack, Typography } from '@mui
 import { Link, useNavigate } from 'react-router-dom'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { deleteCategoryById, getAllCategory } from '../../../Redux/slices/CategoryReducer';
 
-// function CustomPagination() {
-//     const apiRef = useGridApiContext();
-//     const page = useGridSelector(apiRef, gridPageSelector);
-//     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
-//     return (
-//         <Pagination
-//             color="primary"
-//             variant="outlined"
-//             shape="rounded"
-//             page={page + 1}
-//             count={pageCount}
-//             renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
-//             onChange={(event, value) => apiRef.current.setPage(value - 1)}
-//         />
-//     );
-// }
+    return (
+        <Pagination
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+            page={page + 1}
+            count={pageCount}
+            renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
+            onChange={(event, value) => apiRef.current.setPage(value - 1)}
+        />
+    );
+}
 
 function KategoriAdmin() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
+    const dataCategory = useSelector(state => state.category.getDataCategory);
+    React.useEffect(() => {
+        dispatch(getAllCategory())
+    }, [])
+
+    const handleDeleteMerkById = (e, id) => {
+        e.preventDefault()
+        dispatch(deleteCategoryById(id)).then((res) => {
+            if (res.payload.status === true || res.payload.statusCode === 200) {
+                dispatch(getAllCategory())
+                enqueueSnackbar('Merk Berhasil Di Hapus', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            }else if (res.payload.status === false || res.payload.statusCode === 401) {
+                enqueueSnackbar(`${res.payload.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            } else {
+                enqueueSnackbar(`Gagal menghapus kategori`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            }
+        })
+    }
+
     const columns = [
-        { field: 'nama_kategori', headerName: 'Nama Kategori', width: 400, },
+        { field: 'categoryName', headerName: 'Nama Kategori', width: 400, },
         {
             headerName: 'Aksi',
             type: 'Aksi',
@@ -40,45 +64,16 @@ function KategoriAdmin() {
                             color: "yellow", border: '1px solid yellow'
                         },
                     }}><ModeEditOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Edit</Button></Link>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Button onClick={(e) => handleDeleteMerkById(e, params.id)} sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "red", border: '1px solid red'
                         },
-                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button></Link>
+                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button>
                 </Box>
             )
         },
-        // {
-        //     field: 'createdAt', headerName: 'Tanggal', flex: 1,
-        //         valueGetter: (params) => {
-        //         const date = new Date(params.row.createdAt);
-        //         const formattedDate = date.toLocaleDateString();
-        //         const formattedTime = date.toLocaleTimeString();
-        //         return `${formattedDate} | ${formattedTime}`;
-        //     },
-        // },
     ];
 
-    const rows = [
-        { id: 1, lastName: 'Snow', nama_kategori: 'Jon' },
-        { id: 2, lastName: 'Lannister', nama_kategori: 'Cersei' },
-        { id: 3, lastName: 'Lannister', nama_kategori: 'Jaime' },
-        { id: 4, lastName: 'Stark', nama_kategori: 'Arya' },
-        { id: 5, lastName: 'Targaryen', nama_kategori: 'Daenerys' },
-        { id: 6, lastName: 'Melisandre', nama_kategori: null },
-        { id: 7, lastName: 'Clifford', nama_kategori: 'Ferrara' },
-        { id: 8, lastName: 'Frances', nama_kategori: 'Rossini' },
-        { id: 9, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 10, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 11, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 12, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 13, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 14, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 15, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 16, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 17, lastName: 'Roxie', nama_kategori: 'Harvey' },
-        { id: 18, lastName: 'Roxie', nama_kategori: 'Harvey' },
-    ];
     const handleCreateCategory = () => {
         navigate('/admin/kategori/create')
     }
@@ -97,15 +92,9 @@ function KategoriAdmin() {
                     <Box sx={{ height: 'auto', overflow: "auto", width: '100%' }}>
                         <DataGrid
                             autoHeight={true}
-                            rows={rows}
-                            // rows={Object.keys(dataHistoryChat).length !== 0 ? dataHistoryChat.map(item => ({
-                            //     ...item,
-                            //     userName: item.user_id?.userName,
-                            //     product_name: item.product_id?.product_name,
-                            // })) : ''}
-                            // getRowId={(row) => row._id}
+                            rows={dataCategory}
+                            getRowId={(row) => row.id}
                             columns={columns}
-                            // pageSize={10}
                             initialState={{
                                 pagination: {
                                     paginationModel: {
@@ -113,21 +102,20 @@ function KategoriAdmin() {
                                     },
                                 },
                             }}
-                            // pageSize={Object.keys(dataHistoryChat).length !== 0 && Object.keys(dataHistoryChat).length < 9 ? Object.keys(dataHistoryChat).length : 9}
-                            // rowsPerPageOptions={[10]}    
-                            // components={{
-                            //     Pagination: CustomPagination,
-                            //     NoRowsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Tidak ada data yang tersedia di tabel ini
-                            //         </Stack>
-                            //     ),
-                            //     NoResultsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Filter tidak menemukan hasil
-                            //         </Stack>
-                            //     )
-                            // }}
+                            rowsPerPageOptions={[10]}    
+                            components={{
+                                Pagination: CustomPagination,
+                                NoRowsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Tidak ada data yang tersedia di tabel ini
+                                    </Stack>
+                                ),
+                                NoResultsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Filter tidak menemukan hasil
+                                    </Stack>
+                                )
+                            }}
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
                     </Box>

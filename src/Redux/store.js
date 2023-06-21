@@ -6,6 +6,7 @@ import SaleReducer from "./slices/SaleReducer";
 import SupplierReducer from "./slices/SupplierReducer";
 import MerkReducer from "./slices/MerkReducer";
 import UnitReducer from "./slices/UnitReducer";
+import CategoryReducer from "./slices/CategoryReducer";
 
 const rootReducer = {
     auth: AuthReducer,
@@ -15,6 +16,7 @@ const rootReducer = {
     supplier: SupplierReducer,
     merk: MerkReducer,
     unit: UnitReducer,
+    category: CategoryReducer,
 }
 
 const store = configureStore({
