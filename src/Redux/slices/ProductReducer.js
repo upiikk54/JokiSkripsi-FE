@@ -27,6 +27,29 @@ export const getProductUnderKadaluarsa = createAsyncThunk(
     }
 );
 
+export const createProduct = createAsyncThunk(
+    'admin/createProduct',
+    async (product) => {
+        try {
+            const token = localStorage.getItem("token")
+            const response = await axios({
+                method: "POST",
+                data: product,
+                url: `${local_url}/v1/create-product`,
+                headers: {
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Credentials": true,
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            return response.data;
+        } catch (error) {
+            return error.response.data
+        }
+    }
+);
+
 const initialState = {
     getDataProductUnderKadaluarsas: {},
 }
@@ -47,6 +70,22 @@ const productSlice = createSlice({
             }
         },
         [getProductUnderKadaluarsa.rejected]: (state, action) => {
+            return {
+                ...state
+            }
+        },
+
+        [createProduct.pending]: (state, action) => {
+            return {
+                ...state
+            }
+        },
+        [createProduct.fulfilled]: (state, action) => {
+            return {
+                ...state
+            }
+        },
+        [createProduct.rejected]: (state, action) => {
             return {
                 ...state
             }

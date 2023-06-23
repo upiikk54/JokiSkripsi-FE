@@ -7,35 +7,52 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProductUnderKadaluarsa } from '../../../Redux/slices/ProductReducer';
 
-// function CustomPagination() {
-//     const apiRef = useGridApiContext();
-//     const page = useGridSelector(apiRef, gridPageSelector);
-//     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
-//     return (
-//         <Pagination
-//             color="primary"
-//             variant="outlined"
-//             shape="rounded"
-//             page={page + 1}
-//             count={pageCount}
-//             renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
-//             onChange={(event, value) => apiRef.current.setPage(value - 1)}
-//         />
-//     );
-// }
+    return (
+        <Pagination
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+            page={page + 1}
+            count={pageCount}
+            renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
+            onChange={(event, value) => apiRef.current.setPage(value - 1)}
+        />
+    );
+}
 
 function ProdukAdmin() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const productUnderKadaluarsa = useSelector(state => state.product.getDataProductUnderKadaluarsas)
+    React.useEffect(() => {
+        dispatch(getProductUnderKadaluarsa())
+    }, [])
+
     const columns = [
-        { field: 'nama_produk', headerName: 'Nama Produk', width: 200 },
-        { field: 'nama_kategori', headerName: 'Kategori', width: 150 },
-        { field: 'merk', headerName: 'Merk', width: 100 },
-        { field: 'stok', headerName: 'Stok', width: 100 },
-        { field: 'satuan', headerName: 'Satuan', width: 100 },
-        { field: 'harga', headerName: 'Harga', width: 150 },
-        { field: 'Expired', headerName: 'Expired', width: 150 },
+        { field: 'productName', headerName: 'Nama Produk', width: 200 },
+        { field: 'categoryName', headerName: 'Kategori', width: 150 },
+        { field: 'brandName', headerName: 'Merk', width: 100 },
+        { field: 'productStock', headerName: 'Stok', width: 100 },
+        { field: 'unitName', headerName: 'Satuan', width: 100 },
+        { field: 'productPrice', headerName: 'Harga', width: 150 },
+        // { field: 'expired', headerName: 'Expired', width: 150 },
+        {
+            field: 'expiredDate', headerName: 'Expired', flex: 1,
+                valueGetter: (params) => {
+                const date = new Date(params.row.expiredDate);
+                const formattedDate = date.toLocaleDateString();
+                const formattedTime = date.toLocaleTimeString();
+                return `${formattedDate} | ${formattedTime}`;
+            },
+        },
         {
             headerName: 'Aksi',
             type: 'Aksi',
@@ -56,47 +73,10 @@ function ProdukAdmin() {
                 </Box>
             )
         },
-        // {
-        //     field: 'createdAt', headerName: 'Tanggal', flex: 1,
-        //         valueGetter: (params) => {
-        //         const date = new Date(params.row.createdAt);
-        //         const formattedDate = date.toLocaleDateString();
-        //         const formattedTime = date.toLocaleTimeString();
-        //         return `${formattedDate} | ${formattedTime}`;
-        //     },
-        // },
     ];
     const handleCreateProduk = () => {
         navigate('/admin/produk/create')
     }
-
-    const rows = [
-        { id: 1, nama_produk: 'Snow', nama_kategori: 'Jon', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 2, nama_produk: 'Lannister', nama_kategori: 'Cersei', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 3, nama_produk: 'Lannister', nama_kategori: 'Jaime', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 4, nama_produk: 'Stark', nama_kategori: 'Arya', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 5, nama_produk: 'Targaryen', nama_kategori: 'Daenerys', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 6, nama_produk: 'Melisandre', nama_kategori: null, merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 7, nama_produk: 'Clifford', nama_kategori: 'Ferrara', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 8, nama_produk: 'Frances', nama_kategori: 'Rossini', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 9, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 10, nama_produk: 'Roxie2', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 11, nama_produk: 'Roxie3', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 12, nama_produk: 'Roxie4', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 13, nama_produk: 'Roxie5', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 14, nama_produk: 'Roxie6', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 15, nama_produk: 'Roxie7', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 16, nama_produk: 'Roxie8', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 17, nama_produk: 'Roxie9', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 18, nama_produk: 'Roxie0', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 19, nama_produk: 'Roxie11', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 20, nama_produk: 'Roxie12', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 21, nama_produk: 'Roxie13', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 22, nama_produk: 'Roxie14', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 23, nama_produk: 'Roxie15', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 24, nama_produk: 'Roxie16', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 25, nama_produk: 'Roxie17', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-    ];
 
     const columns2 = [
         { field: 'nama_produk', headerName: 'Nama Produk', width: 200, sortable: false, },
@@ -151,15 +131,14 @@ function ProdukAdmin() {
                     <Box sx={{ height: 'auto', overflow: "auto", width: '100%' }}>
                         <DataGrid
                             autoHeight={true}
-                            rows={rows}
-                            // rows={Object.keys(dataHistoryChat).length !== 0 ? dataHistoryChat.map(item => ({
-                            //     ...item,
-                            //     userName: item.user_id?.userName,
-                            //     product_name: item.product_id?.product_name,
-                            // })) : ''}
-                            // getRowId={(row) => row._id}
+                            rows={Object.keys(productUnderKadaluarsa).length !== 0 ? productUnderKadaluarsa.map(item => ({
+                                ...item,
+                                categoryName: item.category?.categoryName,
+                                brandName: item.brand?.brandName,
+                                unitName: item.unit?.unitName,
+                            })) : ''}
+                            getRowId={(row) => row.id}
                             columns={columns}
-                            // pageSize={10}
                             initialState={{
                                 pagination: {
                                     paginationModel: {
@@ -167,21 +146,20 @@ function ProdukAdmin() {
                                     },
                                 },
                             }}
-                            // pageSize={Object.keys(dataHistoryChat).length !== 0 && Object.keys(dataHistoryChat).length < 9 ? Object.keys(dataHistoryChat).length : 9}
-                            // rowsPerPageOptions={[10]}    
-                            // components={{
-                            //     Pagination: CustomPagination,
-                            //     NoRowsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Tidak ada data yang tersedia di tabel ini
-                            //         </Stack>
-                            //     ),
-                            //     NoResultsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Filter tidak menemukan hasil
-                            //         </Stack>
-                            //     )
-                            // }}
+                            rowsPerPageOptions={[10]}    
+                            components={{
+                                Pagination: CustomPagination,
+                                NoRowsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Tidak ada data yang tersedia di tabel ini
+                                    </Stack>
+                                ),
+                                NoResultsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Filter tidak menemukan hasil
+                                    </Stack>
+                                )
+                            }}
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
                     </Box>
@@ -200,15 +178,9 @@ function ProdukAdmin() {
                             <Box className='App' id="App">
                                 <DataGrid
                                     autoHeight={true}
-                                    rows={rows}
-                                    // rows={Object.keys(dataHistoryChat).length !== 0 ? dataHistoryChat.map(item => ({
-                                    //     ...item,
-                                    //     userName: item.user_id?.userName,
-                                    //     product_name: item.product_id?.product_name,
-                                    // })) : ''}
-                                    // getRowId={(row) => row._id}
+                                    rows={productUnderKadaluarsa}
+                                    getRowId={(row) => row.id}
                                     columns={columns2}
-                                    // pageSize={10}
                                     initialState={{
                                         pagination: {
                                             paginationModel: {
@@ -216,21 +188,20 @@ function ProdukAdmin() {
                                             },
                                         },
                                     }}
-                                    // pageSize={Object.keys(dataHistoryChat).length !== 0 && Object.keys(dataHistoryChat).length < 9 ? Object.keys(dataHistoryChat).length : 9}
-                                    // rowsPerPageOptions={[10]}    
-                                    // components={{
-                                    //     Pagination: CustomPagination,
-                                    //     NoRowsOverlay: () => (
-                                    //         <Stack height="100%" alignItems="center" justifyContent="center">
-                                    //             Tidak ada data yang tersedia di tabel ini
-                                    //         </Stack>
-                                    //     ),
-                                    //     NoResultsOverlay: () => (
-                                    //         <Stack height="100%" alignItems="center" justifyContent="center">
-                                    //             Filter tidak menemukan hasil
-                                    //         </Stack>
-                                    //     )
-                                    // }}
+                                    rowsPerPageOptions={[10]}    
+                                    components={{
+                                        Pagination: CustomPagination,
+                                        NoRowsOverlay: () => (
+                                            <Stack height="100%" alignItems="center" justifyContent="center">
+                                                Tidak ada data yang tersedia di tabel ini
+                                            </Stack>
+                                        ),
+                                        NoResultsOverlay: () => (
+                                            <Stack height="100%" alignItems="center" justifyContent="center">
+                                                Filter tidak menemukan hasil
+                                            </Stack>
+                                        )
+                                    }}
                                     sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                                 />
                             </Box>
