@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 
 function AddProduk() {
     const navigate = useNavigate();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     const [categoryId, setCategoryId] = React.useState();

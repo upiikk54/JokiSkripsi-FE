@@ -8,7 +8,8 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductUnderKadaluarsa } from '../../../Redux/slices/ProductReducer';
+import { deleteProductById, getProductUnderKadaluarsa } from '../../../Redux/slices/ProductReducer';
+import { useSnackbar } from 'notistack';
 
 function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -31,10 +32,25 @@ function CustomPagination() {
 function ProdukAdmin() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
     const productUnderKadaluarsa = useSelector(state => state.product.getDataProductUnderKadaluarsas)
     React.useEffect(() => {
         dispatch(getProductUnderKadaluarsa())
     }, [])
+
+    const handleDeleteProductById = (e, id) => {
+        e.preventDefault()
+        dispatch(deleteProductById(id)).then((res) => {
+            if (res.payload.status === true || res.payload.statusCode === 200) {
+                dispatch(getProductUnderKadaluarsa())
+                enqueueSnackbar('Product Berhasil Di Hapus', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            } else if (res.payload.status === false || res.payload.statusCode === 401) {
+                enqueueSnackbar(`${res.payload.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            } else {
+                enqueueSnackbar(`Gagal menghapus kategori`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            }
+        })
+    }
 
     const columns = [
         { field: 'productName', headerName: 'Nama Produk', width: 200 },
@@ -43,14 +59,12 @@ function ProdukAdmin() {
         { field: 'productStock', headerName: 'Stok', width: 100 },
         { field: 'unitName', headerName: 'Satuan', width: 100 },
         { field: 'productPrice', headerName: 'Harga', width: 150 },
-        // { field: 'expired', headerName: 'Expired', width: 150 },
         {
             field: 'expiredDate', headerName: 'Expired', flex: 1,
-                valueGetter: (params) => {
+            valueGetter: (params) => {
                 const date = new Date(params.row.expiredDate);
                 const formattedDate = date.toLocaleDateString();
-                const formattedTime = date.toLocaleTimeString();
-                return `${formattedDate} | ${formattedTime}`;
+                return `${formattedDate}`;
             },
         },
         {
@@ -65,11 +79,11 @@ function ProdukAdmin() {
                             color: "yellow", border: '1px solid yellow'
                         },
                     }}><ModeEditOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Edit</Button></Link>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Button onClick={(e) => handleDeleteProductById(e, params.id)} sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "red", border: '1px solid red'
                         },
-                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button></Link>
+                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button>
                 </Box>
             )
         },
@@ -77,44 +91,6 @@ function ProdukAdmin() {
     const handleCreateProduk = () => {
         navigate('/admin/produk/create')
     }
-
-    const columns2 = [
-        { field: 'nama_produk', headerName: 'Nama Produk', width: 200, sortable: false, },
-        { field: 'stok', headerName: 'Stok', width: 100, sortable: false, },
-        { field: 'satuan', headerName: 'Satuan', width: 100, sortable: false, },
-        { field: 'harga', headerName: 'Harga', width: 100, sortable: false, },
-        { field: 'Expired', headerName: 'Expired', width: 150, sortable: false, },
-    ];
-
-    const printPDF = () => {
-        window.scrollTo(0, 0);
-        const domElement = document.getElementById("App");
-        html2canvas(domElement, {
-            scale: 3,
-            scrollX: -window.scrollX,
-            scrollY: -window.scrollY,
-            windowWidth: document.documentElement.offsetWidth,
-            windowHeight: domElement.scrollHeight,
-            allowTaint: true,
-            useCORS: true,
-            onclone: (document) => {
-                document.getElementById("print").style.visibility = "hidden";
-            },
-        }).then((canvas) => {
-
-            const imgData = canvas
-                .toDataURL("image/png")
-                .replace("image/png", "image/octet-stream");
-
-            const pdf = new jsPDF("p", "mm", "a4");
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, "JPEG", 1, 1, pdfWidth, pdfHeight);
-            // pdf.save(`Invoice_${dataTransaction.invoice_number}.pdf`);
-            pdf.save(`Nota_pembelian.pdf`);
-        });
-    };
 
     return (
         <>
@@ -146,7 +122,7 @@ function ProdukAdmin() {
                                     },
                                 },
                             }}
-                            rowsPerPageOptions={[10]}    
+                            rowsPerPageOptions={[10]}
                             components={{
                                 Pagination: CustomPagination,
                                 NoRowsOverlay: () => (
@@ -162,50 +138,6 @@ function ProdukAdmin() {
                             }}
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Laporan Produk</Typography>
-                        <Box>
-                            <Button id="print" onClick={printPDF} sx={{
-                                width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', color: 'white', ":hover": {
-                                    bgcolor: "#317276"
-                                }
-                            }}>
-                                Download
-                            </Button>
-                        </Box>
-                        <Box className="page-agency">
-                            <Box className='App' id="App">
-                                <DataGrid
-                                    autoHeight={true}
-                                    rows={productUnderKadaluarsa}
-                                    getRowId={(row) => row.id}
-                                    columns={columns2}
-                                    initialState={{
-                                        pagination: {
-                                            paginationModel: {
-                                                pageSize: 10,
-                                            },
-                                        },
-                                    }}
-                                    rowsPerPageOptions={[10]}    
-                                    components={{
-                                        Pagination: CustomPagination,
-                                        NoRowsOverlay: () => (
-                                            <Stack height="100%" alignItems="center" justifyContent="center">
-                                                Tidak ada data yang tersedia di tabel ini
-                                            </Stack>
-                                        ),
-                                        NoResultsOverlay: () => (
-                                            <Stack height="100%" alignItems="center" justifyContent="center">
-                                                Filter tidak menemukan hasil
-                                            </Stack>
-                                        )
-                                    }}
-                                    sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
-                                />
-                            </Box>
-                        </Box>
                     </Box>
                 </Box>
             </Dashboard>

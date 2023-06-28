@@ -184,18 +184,13 @@ function Dashboard(props) {
                     anchor="left"
                     open={open}
                 >
-                    <DrawerHeader sx={{ justifyContent: 'space-between', py: 1.85 }}>
-                        {/* <Link to={'/'} style={{ textDecoration: "none", color: "black" }} > */}
+                    <DrawerHeader sx={{ gap: '10px', py: 1.85 }}>
                             <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer' }}>
                                 <Box sx={{ display: 'flex' }}>
-                                    {/* <Box sx={{ maxWidth: '41px', width: '100%', borderRadius: '50%' }} component={'img'} src={Logo} /> */}haloo
-                                </Box>
-                                <Box sx={{ display: 'flex' }}>
-                                    <Typography sx={{ color: '#FFD12D', fontSize: '18px', fontWeight: 600, lineHeight: '39px', fontFamily: 'Axiforma' }}>Antha</Typography>
-                                    <Typography sx={{ color: 'white', fontSize: '18px', fontWeight: 600, lineHeight: '39px', fontFamily: 'Axiforma' }}>Gallery</Typography>
+                                    <Typography sx={{ color: '#FFD12D', fontSize: '18px', fontWeight: 600, lineHeight: '39px', fontFamily: 'Axiforma' }}>Ware</Typography>
+                                    <Typography sx={{ color: 'white', fontSize: '18px', fontWeight: 600, lineHeight: '39px', fontFamily: 'Axiforma' }}>House</Typography>
                                 </Box>
                             </Box>
-                        {/* </Link> */}
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>

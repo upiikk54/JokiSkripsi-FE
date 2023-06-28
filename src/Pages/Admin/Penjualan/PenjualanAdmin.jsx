@@ -6,31 +6,70 @@ import { Link, useNavigate } from 'react-router-dom'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteSaleTransactionById, getAllSale } from '../../../Redux/slices/SaleReducer';
 
-// function CustomPagination() {
-//     const apiRef = useGridApiContext();
-//     const page = useGridSelector(apiRef, gridPageSelector);
-//     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
-//     return (
-//         <Pagination
-//             color="primary"
-//             variant="outlined"
-//             shape="rounded"
-//             page={page + 1}
-//             count={pageCount}
-//             renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
-//             onChange={(event, value) => apiRef.current.setPage(value - 1)}
-//         />
-//     );
-// }
+    return (
+        <Pagination
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+            page={page + 1}
+            count={pageCount}
+            renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
+            onChange={(event, value) => apiRef.current.setPage(value - 1)}
+        />
+    );
+}
 
 function PenjualanAdmin() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
+    const dataSale = useSelector(state => state.sale.getAllSales);
+    React.useEffect(() => {
+        dispatch(getAllSale())
+    }, [])
+
+console.log(dataSale);
+
+    const handleDeleteSaleTransactionById = (e, id) => {
+        e.preventDefault()
+        dispatch(deleteSaleTransactionById(id)).then((res) => {
+            if (res.payload.status === true || res.payload.statusCode === 200) {
+                dispatch(getAllSale())
+                enqueueSnackbar('Transaksi Berhasil Di Hapus', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            } else if (res.payload.status === false || res.payload.statusCode === 401) {
+                enqueueSnackbar(`${res.payload.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            } else {
+                enqueueSnackbar(`Gagal menghapus kategori`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            }
+        })
+    };
+
     const columns = [
-        { field: 'Expired', headerName: 'Kode Transaksi', width: 150 },
-        { field: 'stok', headerName: 'Tanggal', width: 150 },
-        { field: 'harga', headerName: 'Total', width: 150 },
+        { field: 'transactionCode', headerName: 'Kode Transaksi', width: 150 },
+        {
+            field: 'transactionDate', headerName: 'Tanggal', flex: 1,
+            valueGetter: (params) => {
+                const date = new Date(params.row.createdAt);
+                const formattedDate = date.toLocaleDateString();
+                return `${formattedDate}`;
+            },
+        },
+        // { field: 'harga', headerName: 'Total', width: 150 },
+        {
+            field: 'totalHarga',
+            headerName: 'Total',
+            flex: 1,
+            valueGetter: (params) => params.row.amount * params.row.product.productPrice,
+        },
         {
             headerName: 'Aksi',
             type: 'Aksi',
@@ -48,49 +87,20 @@ function PenjualanAdmin() {
                             color: "green", border: '1px solid green'
                         },
                     }}><FilePresentOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Nota</Button></Link>
-                    <Link to={`/admin/merk/${params.id}`}><Button sx={{
+                    <Button onClick={(e) => handleDeleteSaleTransactionById(e, params.id)} sx={{
                         textTransform: 'none', color: 'black', border: '1px solid #D2D5DA', borderRadius: '8px', ":hover": {
                             color: "red", border: '1px solid red'
                         },
-                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button></Link>
+                    }}><DeleteOutlineOutlinedIcon sx={{ width: '16px', mr: '8px' }} />Hapus</Button>
                 </Box>
             )
         },
-        // {
-        //     field: 'createdAt', headerName: 'Tanggal', flex: 1,
-        //         valueGetter: (params) => {
-        //         const date = new Date(params.row.createdAt);
-        //         const formattedDate = date.toLocaleDateString();
-        //         const formattedTime = date.toLocaleTimeString();
-        //         return `${formattedDate} | ${formattedTime}`;
-        //     },
-        // },
     ];
 
     const handleCreatePenjualan = () => {
         navigate('/admin/penjualan/create')
     }
 
-    const rows = [
-        { id: 1, nama_produk: 'Snow', nama_kategori: 'Jon', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 2, nama_produk: 'Lannister', nama_kategori: 'Cersei', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 3, nama_produk: 'Lannister', nama_kategori: 'Jaime', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 4, nama_produk: 'Stark', nama_kategori: 'Arya', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 5, nama_produk: 'Targaryen', nama_kategori: 'Daenerys', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 6, nama_produk: 'Melisandre', nama_kategori: null, merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 7, nama_produk: 'Clifford', nama_kategori: 'Ferrara', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 8, nama_produk: 'Frances', nama_kategori: 'Rossini', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 9, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 10, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 11, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 12, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 13, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 14, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 15, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 16, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 17, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-        { id: 18, nama_produk: 'Roxie', nama_kategori: 'Harvey', merk: 'asus', stok: '100', harga: '5000', Expired: '1232139', satuan: 'pcs' },
-    ];
     return (
         <>
             <Dashboard>
@@ -106,15 +116,14 @@ function PenjualanAdmin() {
                     <Box sx={{ height: 'auto', overflow: "auto", width: '100%' }}>
                         <DataGrid
                             autoHeight={true}
-                            rows={rows}
+                            rows={dataSale}
                             // rows={Object.keys(dataHistoryChat).length !== 0 ? dataHistoryChat.map(item => ({
                             //     ...item,
                             //     userName: item.user_id?.userName,
                             //     product_name: item.product_id?.product_name,
                             // })) : ''}
-                            // getRowId={(row) => row._id}
+                            getRowId={(row) => row.id}
                             columns={columns}
-                            // pageSize={10}
                             initialState={{
                                 pagination: {
                                     paginationModel: {
@@ -122,21 +131,20 @@ function PenjualanAdmin() {
                                     },
                                 },
                             }}
-                            // pageSize={Object.keys(dataHistoryChat).length !== 0 && Object.keys(dataHistoryChat).length < 9 ? Object.keys(dataHistoryChat).length : 9}
-                            // rowsPerPageOptions={[10]}    
-                            // components={{
-                            //     Pagination: CustomPagination,
-                            //     NoRowsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Tidak ada data yang tersedia di tabel ini
-                            //         </Stack>
-                            //     ),
-                            //     NoResultsOverlay: () => (
-                            //         <Stack height="100%" alignItems="center" justifyContent="center">
-                            //             Filter tidak menemukan hasil
-                            //         </Stack>
-                            //     )
-                            // }}
+                            rowsPerPageOptions={[10]}    
+                            components={{
+                                Pagination: CustomPagination,
+                                NoRowsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Tidak ada data yang tersedia di tabel ini
+                                    </Stack>
+                                ),
+                                NoResultsOverlay: () => (
+                                    <Stack height="100%" alignItems="center" justifyContent="center">
+                                        Filter tidak menemukan hasil
+                                    </Stack>
+                                )
+                            }}
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
                     </Box>

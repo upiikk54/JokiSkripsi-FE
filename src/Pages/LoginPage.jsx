@@ -6,9 +6,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { LoginUsers } from '../Redux/slices/AuthReducer';
+import { useDispatch } from 'react-redux';
 
 function LoginPage() {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -27,30 +30,22 @@ function LoginPage() {
     };
 
     const handleLogin = async (e) => {
-        e.preventDefault();
-
-        try {
-            const adminToLoginPayload = {
-                email: loginValue.emailValueLogin,
-                password: loginValue.passwordValueLogin,
-            }
-
-            const loginRequest = await axios.post(
-                "http://localhost:8811/v1/auth/login",
-                adminToLoginPayload
-            )
-            const loginResponse = loginRequest.data;
-
-            if (loginResponse.status) {
-                localStorage.setItem("token", loginResponse.data.token);
-                enqueueSnackbar(`${loginResponse.message}`, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 3000 });
-                navigate('/admin/dashboard')
-            }
-        } catch (err) {
-            const response = err.response.data;
-            enqueueSnackbar(`${response.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 3000 });
+        e.preventDefault()
+        const user = {
+            email: loginValue.emailValueLogin,
+            password: loginValue.passwordValueLogin,
         }
-    };
+
+        dispatch(LoginUsers(user)).then((res) => {
+            if (res.payload.status === true || res.payload.statusCode === 201) {
+                localStorage.setItem("token", res.payload.data.token)
+                enqueueSnackbar(`${res.payload.message}`, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+                navigate('/admin/dashboard')
+            } else if (res.payload.status === false || res.payload.statusCode === 500) {
+                enqueueSnackbar(`${res.payload.message}`, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
+            }
+        })
+    }
 
     return (
         <>
