@@ -25,3 +25,7 @@ code {
 .App {
   padding: 20px
 }
+
+.footer {
+  display: none
+}

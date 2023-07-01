@@ -1,15 +1,26 @@
 import React from 'react'
 import Dashboard from '../Dashboard'
 import { DataGrid, gridPageCountSelector, gridPageSelector, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
-import { Box, Button, Pagination, PaginationItem, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, IconButton, Modal, Pagination, PaginationItem, Stack, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProductById, getProductUnderKadaluarsa } from '../../../Redux/slices/ProductReducer';
 import { useSnackbar } from 'notistack';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '15px'
+};
 
 function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -30,6 +41,9 @@ function CustomPagination() {
 }
 
 function ProdukAdmin() {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
@@ -51,6 +65,8 @@ function ProdukAdmin() {
             }
         })
     }
+
+    console.log(productUnderKadaluarsa);
 
     const columns = [
         { field: 'productName', headerName: 'Nama Produk', width: 200 },
@@ -95,14 +111,47 @@ function ProdukAdmin() {
     return (
         <>
             <Dashboard>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        {Object.keys(productUnderKadaluarsa).length !== 0 ? productUnderKadaluarsa.map((data, i) => {
+                            const dates = data.expiredDate
+                            const currentDate = new Date();
+                            const expirationDate = new Date(dates);
+                            const timeDifference = expirationDate.getTime() - currentDate.getTime();
+                            const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+                            let message;
+                            if (daysDifference > 0 && daysDifference <= 7) {
+                                message = <Alert key={i} severity="warning">produk {data.productName} akan kadaluarsa {daysDifference} hari lagi</Alert>
+                            }  else if (daysDifference === 0) {
+                                message = <Alert key={i} severity="warning">produk {data.productName} akan kadaluarsa hari ini</Alert>
+                            }
+                            return (
+                                <>
+                                    {message}
+                                </>
+                            )
+                        }) : <Typography>tidak ada notifikasi</Typography>
+                        }
+                    </Box>
+                </Modal>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', mt: '20px', width: '100%', maxWidth: '1440px' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontWeight: 600, fontSize: '20px', fontFamily: 'Axiforma', color: '#317276' }}>Produk</Typography>
-                        <Button onClick={handleCreateProduk} variant='contained' sx={{
-                            width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
-                                bgcolor: "#317276"
-                            }
-                        }}>Tambah Produk</Button>
+                        <Box sx={{ display: 'flex', gap: '20px' }}>
+                            <IconButton onClick={handleOpen}>
+                                <NotificationsActiveIcon sx={{ color: '#317276' }} />
+                            </IconButton>
+                            <Button onClick={handleCreateProduk} variant='contained' sx={{
+                                width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
+                                    bgcolor: "#317276"
+                                }
+                            }}>Tambah Produk</Button>
+                        </Box>
                     </Box>
                     <Box sx={{ height: 'auto', overflow: "auto", width: '100%' }}>
                         <DataGrid

@@ -5,10 +5,8 @@ import { Box, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { getSaleTransactionById } from '../../../Redux/slices/SaleReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
 
 function DetailPenjualan() {
-    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { id } = useParams();
@@ -23,10 +21,6 @@ function DetailPenjualan() {
     const day = parsedDate.getDate();
     const year = parsedDate.getFullYear();
     const formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-
-    // const totalBiaya = dataSale.amount * dataSale.product.productPrice
-    // const totalBiaya = dataSale.amount * Object.keys(dataSale).length !== 0 ? dataSale.product.productPrice : ''
-    // console.log(totalBiaya);
 
     const handleBackDetail = () => {
         navigate('/admin/penjualan')

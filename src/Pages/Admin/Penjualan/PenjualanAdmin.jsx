@@ -37,8 +37,6 @@ function PenjualanAdmin() {
         dispatch(getAllSale())
     }, [])
 
-console.log(dataSale);
-
     const handleDeleteSaleTransactionById = (e, id) => {
         e.preventDefault()
         dispatch(deleteSaleTransactionById(id)).then((res) => {
@@ -63,7 +61,6 @@ console.log(dataSale);
                 return `${formattedDate}`;
             },
         },
-        // { field: 'harga', headerName: 'Total', width: 150 },
         {
             field: 'totalHarga',
             headerName: 'Total',
@@ -99,7 +96,11 @@ console.log(dataSale);
 
     const handleCreatePenjualan = () => {
         navigate('/admin/penjualan/create')
-    }
+    };
+
+    const handleReportBulanan = () => {
+        navigate('/admin/penjualan/report')
+    };
 
     return (
         <>
@@ -117,11 +118,6 @@ console.log(dataSale);
                         <DataGrid
                             autoHeight={true}
                             rows={dataSale}
-                            // rows={Object.keys(dataHistoryChat).length !== 0 ? dataHistoryChat.map(item => ({
-                            //     ...item,
-                            //     userName: item.user_id?.userName,
-                            //     product_name: item.product_id?.product_name,
-                            // })) : ''}
                             getRowId={(row) => row.id}
                             columns={columns}
                             initialState={{
@@ -148,6 +144,11 @@ console.log(dataSale);
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
                     </Box>
+                    <Button onClick={handleReportBulanan} variant='contained' sx={{
+                        width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
+                            bgcolor: "#317276"
+                        }
+                    }}>Laporan penjualan</Button>
                 </Box>
             </Dashboard>
         </>

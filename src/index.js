@@ -32,6 +32,8 @@ import DetailPembelian from './Pages/Admin/Pembelian/DetailPembelian';
 import DetailPenjualan from './Pages/Admin/Penjualan/DetailPenjualan';
 import NotaPembelian from './Pages/Admin/Pembelian/NotaPembelian';
 import NotaPenjualan from './Pages/Admin/Penjualan/NotaPenjualan';
+import ReportBulananPembelian from './Pages/Admin/Pembelian/ReportBulananPembelian';
+import ReportBulananPenjualan from './Pages/Admin/Penjualan/ReportBulananPenjualan';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -61,10 +63,12 @@ root.render(
               <Route path="/admin/pembelian/:id" element={<DetailPembelian />} />
               <Route path="/admin/pembelian/create" element={<AddPembelian />} />
               <Route path="/admin/pembelian/nota/:id" element={<NotaPembelian />} />
+              <Route path="/admin/pembelian/report" element={<ReportBulananPembelian />} />
               <Route path="/admin/penjualan" element={<PenjualanAdmin />} />
               <Route path="/admin/penjualan/:id" element={<DetailPenjualan />} />
               <Route path="/admin/penjualan/nota/:id" element={<NotaPenjualan />} />
               <Route path="/admin/penjualan/create" element={<AddPenjualan />} />
+              <Route path="/admin/penjualan/report" element={<ReportBulananPenjualan />} />
             </Routes>
         </ThemeProvider>
       </SnackbarProvider>

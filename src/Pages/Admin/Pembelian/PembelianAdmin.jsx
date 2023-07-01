@@ -9,6 +9,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { deletePurchaseById, getAllPurchase } from '../../../Redux/slices/PurchaseReducer';
+import axios from 'axios';
 
 function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -33,6 +34,7 @@ function PembelianAdmin() {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const dataPurchase = useSelector(state => state.purchase.getAllPurchases);
+
     React.useEffect(() => {
         dispatch(getAllPurchase())
     }, [])
@@ -51,13 +53,15 @@ function PembelianAdmin() {
         })
     };
 
+
+
     const columns = [
         { field: 'transactionCode', headerName: 'Kode Transaksi', width: 150 },
         { field: 'Pemasok', headerName: 'Pemasok', width: 150 },
         {
             field: 'transactionDate', headerName: 'Tanggal', flex: 1,
             valueGetter: (params) => {
-                const date = new Date(params.row.createdAt);
+                const date = new Date(params.row.transactionDate);
                 const formattedDate = date.toLocaleDateString();
                 return `${formattedDate}`;
             },
@@ -96,6 +100,10 @@ function PembelianAdmin() {
     ];
     const handleCreatePembelian = () => {
         navigate('/admin/pembelian/create')
+    }
+
+    const handleReportBulanan = () => {
+        navigate('/admin/pembelian/report')
     }
 
     return (
@@ -144,6 +152,11 @@ function PembelianAdmin() {
                             sx={{ maxWidth: { xs: 'unset', xl: '1440px' } }}
                         />
                     </Box>
+                    <Button onClick={handleReportBulanan} variant='contained' sx={{
+                        width: '199px', height: '40px', backgroundColor: '#317276', fontFamily: 'Axiforma', ":hover": {
+                            bgcolor: "#317276"
+                        }
+                    }}>Laporan pembelian</Button>
                 </Box>
             </Dashboard>
         </>
