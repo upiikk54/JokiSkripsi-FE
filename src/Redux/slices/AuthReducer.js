@@ -3,9 +3,6 @@ import {
     createSlice
 } from "@reduxjs/toolkit";
 import axios from "axios";
-// import { parseJwt } from "../../Helpers/ParseJWT";
-// import { encryptLocalStorage } from '../../Helpers/Encryption/encryptLocalStorage'
-// const local_url = "http://localhost:8987";
 const local_url = "http://localhost:8811";
 
 export const LoginUsers = createAsyncThunk(
@@ -61,7 +58,6 @@ const authSlice = createSlice({
         },
     },
     extraReducers: {
-
         // // Auth me
         [getUsers.pending]: (state, action) => {
             return {

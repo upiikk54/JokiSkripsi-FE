@@ -22,6 +22,9 @@ function DetailPenjualan() {
     const year = parsedDate.getFullYear();
     const formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
 
+    const currencyCost = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(dataSale.product.productPrice);
+    const totalCurrency = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(dataSale.amount * dataSale.product.productPrice);
+
     const handleBackDetail = () => {
         navigate('/admin/penjualan')
     }
@@ -58,11 +61,13 @@ function DetailPenjualan() {
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataSale.product.productPrice}</Typography>
+                                        {/* <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataSale.product.productPrice}</Typography> */}
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{currencyCost}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Total Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataSale.amount * dataSale.product.productPrice}</Typography>
+                                        {/* <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataSale.amount * dataSale.product.productPrice}</Typography> */}
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{totalCurrency}</Typography>
                                     </Box>
                                 </Box>
                             </Box>

@@ -19,8 +19,6 @@ function NotaPembelian() {
         dispatch(getPurchaseById(id))
     }, [])
 
-    console.log(dataPurchase);
-
     const parsedDate = new Date(dataPurchase.transactionDate);
     const month = parsedDate.getMonth() + 1;
     const day = parsedDate.getDate();
@@ -28,6 +26,8 @@ function NotaPembelian() {
     const formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
 
     const totalBiaya = dataPurchase.amount * dataPurchase.purchasePrice
+    const currencyCost = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(dataPurchase.purchasePrice);
+    const totalCurrency = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(totalBiaya);
 
     const printPDF = () => {
         window.scrollTo(0, 0);
@@ -98,11 +98,11 @@ function NotaPembelian() {
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataPurchase.purchasePrice}</Typography>
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{currencyCost}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Total Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{totalBiaya}</Typography>
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{totalCurrency}</Typography>
                                     </Box>
                                 </Box>
                             </Box>

@@ -30,8 +30,6 @@ function UpdateMerk() {
         })
     }, [id])
 
-
-
     const handleChange = (prop) => (event) => {
         setMerkValue({ ...merkValue, [prop]: event.target.value });
     };

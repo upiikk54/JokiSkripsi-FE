@@ -4,11 +4,9 @@ import { Box, Typography } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import { getPurchaseById } from '../../../Redux/slices/PurchaseReducer';
 
 function DetailPembelian() {
-    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { id } = useParams();
@@ -25,7 +23,8 @@ function DetailPembelian() {
     const formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
 
     const totalBiaya = dataPurchase.amount * dataPurchase.purchasePrice
-    console.log(totalBiaya);
+    const currencyCost = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(dataPurchase.purchasePrice);
+    const totalCurrency = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(totalBiaya);
 
     const handleBackDetail = () => {
         navigate('/admin/pembelian')
@@ -63,11 +62,12 @@ function DetailPembelian() {
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataPurchase.purchasePrice}</Typography>
+                                        {/* <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{dataPurchase.purchasePrice}</Typography> */}
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{currencyCost}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #D2D5DA' }}>
                                         <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 400 }}>Total Biaya</Typography>
-                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{totalBiaya}</Typography>
+                                        <Typography sx={{ fontSize: { xs: '12px', sm: '15px', md: '20px' }, fontWeight: 600 }}>{totalCurrency}</Typography>
                                     </Box>
                                 </Box>
                             </Box>

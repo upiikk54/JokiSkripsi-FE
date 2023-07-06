@@ -32,6 +32,7 @@ function AddPenjualan() {
 
     const [saleValue, setSaleValue] = React.useState({
         amountValue: 0,
+        nameShopValue: '',
     });
 
     const handleChange = (prop) => (event) => {
@@ -42,6 +43,7 @@ function AddPenjualan() {
         e.preventDefault()
         const sale = {
             productId: productId,
+            nameShop: saleValue.nameShopValue,
             amount: saleValue.amountValue,
             transactionDate: dateString,
         }
@@ -100,6 +102,14 @@ function AddPenjualan() {
                                     onChange={handleChange('amountValue')}
                                     label='Jumlah'
                                     type='number'
+                                    fullWidth
+                                    id="fullWidth" />
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', pt: '35px', px: '36px', width: '100%', maxWidth: '1440px', }}>
+                                <Typography sx={{ fontSize: '18px', fontWeight: 400, fontFamily: 'Axiforma' }}>Nama Toko</Typography>
+                                <TextField
+                                    onChange={handleChange('nameShopValue')}
+                                    label='Nama Toko'
                                     fullWidth
                                     id="fullWidth" />
                             </Box>

@@ -71,7 +71,6 @@ function ReportBulananPenjualan() {
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
             pdf.addImage(imgData, "JPEG", 1, 1, pdfWidth, pdfHeight);
-            // pdf.save(`Invoice_${dataTransaction.invoice_number}.pdf`);
             pdf.save(`Laporan-penjualan.pdf`);
             enqueueSnackbar('Laporan berhasil di download', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 1500 });
         });

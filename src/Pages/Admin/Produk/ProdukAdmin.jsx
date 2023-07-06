@@ -66,15 +66,19 @@ function ProdukAdmin() {
         })
     }
 
-    console.log(productUnderKadaluarsa);
-
     const columns = [
         { field: 'productName', headerName: 'Nama Produk', width: 200 },
         { field: 'categoryName', headerName: 'Kategori', width: 150 },
         { field: 'brandName', headerName: 'Merk', width: 100 },
         { field: 'productStock', headerName: 'Stok', width: 100 },
         { field: 'unitName', headerName: 'Satuan', width: 100 },
-        { field: 'productPrice', headerName: 'Harga', width: 150 },
+        {
+            field: 'productPrice', headerName: 'Harga', width: 150, 
+            valueGetter: (params) => {
+                const currency = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(params.row.productPrice);
+                return `${currency}`;
+            }
+        },
         {
             field: 'expiredDate', headerName: 'Expired', flex: 1,
             valueGetter: (params) => {
@@ -127,7 +131,7 @@ function ProdukAdmin() {
                             let message;
                             if (daysDifference > 0 && daysDifference <= 7) {
                                 message = <Alert key={i} severity="warning">produk {data.productName} akan kadaluarsa {daysDifference} hari lagi</Alert>
-                            }  else if (daysDifference === 0) {
+                            } else if (daysDifference === 0) {
                                 message = <Alert key={i} severity="warning">produk {data.productName} akan kadaluarsa hari ini</Alert>
                             }
                             return (

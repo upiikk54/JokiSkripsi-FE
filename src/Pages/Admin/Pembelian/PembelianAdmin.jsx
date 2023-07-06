@@ -9,7 +9,6 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { deletePurchaseById, getAllPurchase } from '../../../Redux/slices/PurchaseReducer';
-import axios from 'axios';
 
 function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -70,7 +69,11 @@ function PembelianAdmin() {
             field: 'totalHarga',
             headerName: 'Total Harga',
             flex: 1,
-            valueGetter: (params) => params.row.amount * params.row.purchasePrice,
+            valueGetter: (params) => {
+                const total = params.row.amount * params.row.purchasePrice;
+                const totalCurrency = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(total);
+                return `${totalCurrency}`;
+            },
         },
         {
             headerName: 'Aksi',

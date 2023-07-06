@@ -141,7 +141,7 @@ function UpdateProduk() {
                                                     })}
                                                 </Select>
                                                 : ''}
-                                            <Alert severity="error">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
+                                            <Alert severity="success">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
                                         </FormControl>
                                     </Box>
                                 </Box>
@@ -169,7 +169,7 @@ function UpdateProduk() {
                                                     })}
                                                 </Select>
                                                 : ''}
-                                            <Alert severity="error">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
+                                            <Alert severity="success">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
                                         </FormControl>
                                     </Box>
                                 </Box>
@@ -197,7 +197,7 @@ function UpdateProduk() {
                                                     })}
                                                 </Select>
                                                 : ''}
-                                            <Alert severity="error">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
+                                            <Alert severity="success">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
                                         </FormControl>
                                     </Box>
                                 </Box>
@@ -224,16 +224,6 @@ function UpdateProduk() {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', pt: '35px', px: '36px', width: '100%', maxWidth: '1440px', }}>
                                     <Typography sx={{ fontSize: '18px', fontWeight: 400, fontFamily: 'Axiforma' }}>Tanggal Expired</Typography>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        {/* {Object.keys(dataProduct.expiredDate) !== undefined ?
-                                        <DatePicker
-                                            value={dateValue}
-                                            onChange={(newValue) => {
-                                                setDateValue(newValue)
-                                            }}
-                                            inputFormat="DD-MM-YYYY"
-                                            renderInput={(params) => <TextField {...params} helperText={null} />}
-                                        />
-                                        : ''} */}
                                         <DatePicker
                                             value={dateValue}
                                             onChange={(newValue) => {
@@ -243,7 +233,7 @@ function UpdateProduk() {
                                             renderInput={(params) => <TextField {...params} helperText={null} />}
                                         />
                                     </LocalizationProvider>
-                                    <Alert severity="error">Tidak diisi kembali tidak apa-apa, karena data akan tetap tidak berubah jika tidak diisi</Alert>
+                                    <Alert severity="error">Harus diisi kembali expired Produk, jika tidak diisi maka akan terisi default (01-01-2000)</Alert>
                                 </Box>
                             </Box>
                             :

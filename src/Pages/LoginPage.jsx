@@ -10,7 +10,7 @@ import { LoginUsers } from '../Redux/slices/AuthReducer';
 import { useDispatch } from 'react-redux';
 
 function LoginPage() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const [showPassword, setShowPassword] = React.useState(false);

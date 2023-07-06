@@ -56,7 +56,6 @@ function AddPembelian() {
             purchasePrice: supplierValue.purchasePriceValue,
             transactionDate: dateString,
         }
-        // console.log(purchase);
 
         dispatch(createPurchase(purchase)).then((res) => {
             if (res.payload.status === true || res.payload.statusCode === 201) {
